@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BulkyBook.Models.ViewModels
+namespace DawgInHim.Models.ViewModels
 {
 	public class ShoppingCartVM
 	{
