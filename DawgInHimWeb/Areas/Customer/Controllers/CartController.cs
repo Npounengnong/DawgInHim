@@ -1,50 +1,54 @@
-﻿using DawgInHim.Models.ViewModels;
+﻿using DawgInHim.DataAccess.Repository.IRepository;
+using DawgInHim.Models;
+using DawgInHim.Models.ViewModels;
+using DawgInHim.Utility;
 using DawgInHim.DataAccess.Repository.IRepository;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Drawing.Text;
-using System.Security.Claims;
+using DawgInHim.Models.ViewModels;
 using DawgInHim.Models;
 using DawgInHim.Utility;
-using Stripe.Checkout;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
-namespace DawgInHimWeb.Areas.Customer.Controllers
+namespace BulkyBookWeb.Areas.Customer.Controllers
 {
-    [Area("Customer")]
-    [Authorize]
-    public class CartController : Controller
-    {
-        private readonly IUnitOfWork _unitOfWork;
+	[Area("Customer")]
+	[Authorize]
+	public class CartController : Controller
+	{
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IEmailSender _emailSender;
+		[BindProperty]
+		public ShoppingCartVM ShoppingCartVM { get; set; }
+		public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
+		{
+			_unitOfWork = unitOfWork;
+			_emailSender = emailSender;
+		}
+		public IActionResult Index()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-        public ShoppingCartVM ShoppingCartVM { get; set; }
-        public int OrderTotal { get; set; }
-
-        public CartController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
-        public IActionResult Index()
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            ShoppingCartVM = new ShoppingCartVM()
-            {
-                ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
-                includeProperties: "Product"),
+			ShoppingCartVM = new ShoppingCartVM()
+			{
+				ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
+				includeProperties: "Product"),
 				OrderHeader = new()
 			};
-            foreach(var cart in ShoppingCartVM.ListCart)
-            {
-                cart.Price = GetPriceBasedOnQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
-                ShoppingCartVM.OrderHeader.OrderTotal +=(cart.Price * cart.Count);
-            }
-            return View(ShoppingCartVM);
-        }
-
-
-
+			foreach (var cart in ShoppingCartVM.ListCart)
+			{
+				cart.Price = GetPriceBasedOnQuantity(cart.Count, cart.Product.Price,
+					cart.Product.Price50, cart.Product.Price100);
+				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+			}
+			return View(ShoppingCartVM);
+		}
 
 		public IActionResult Summary()
 		{
@@ -77,9 +81,7 @@ namespace DawgInHimWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 			return View(ShoppingCartVM);
-
 		}
-
 
 		[HttpPost]
 		[ActionName("Summary")]
@@ -131,10 +133,11 @@ namespace DawgInHimWeb.Areas.Customer.Controllers
 				_unitOfWork.Save();
 			}
 
+
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
 				//stripe settings 
-				var domain = "https://localhost:44300/";
+				var domain = "https://localhost:44349/";
 				var options = new SessionCreateOptions
 				{
 					PaymentMethodTypes = new List<string>
@@ -180,7 +183,6 @@ namespace DawgInHimWeb.Areas.Customer.Controllers
 			{
 				return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
 			}
-		
 		}
 
 		public IActionResult OrderConfirmation(int id)
@@ -198,34 +200,34 @@ namespace DawgInHimWeb.Areas.Customer.Controllers
 					_unitOfWork.Save();
 				}
 			}
-			//_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Bulky Book", "<p>New Order Created</p>");
-			//List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
-			//orderHeader.ApplicationUserId).ToList();
-			//HttpContext.Session.Clear();
-			//_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+			_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Dawg in Him", "<p>New Order Created</p>");
+			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
+			orderHeader.ApplicationUserId).ToList();
+			HttpContext.Session.Clear();
+			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
 			return View(id);
 		}
 
-
-
 		public IActionResult Plus(int cartId)
-        {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
-            _unitOfWork.ShoppingCart.IncrementCount(cart,1);
-            _unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
-        }
+		{
+			var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
+			_unitOfWork.ShoppingCart.IncrementCount(cart, 1);
+			_unitOfWork.Save();
+			return RedirectToAction(nameof(Index));
+		}
 
 		public IActionResult Minus(int cartId)
 		{
 			var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
-            if (cart.Count <= 1)
-            {
-                _unitOfWork.ShoppingCart.Remove(cart);
-            }
-            else
-            {
+			if (cart.Count <= 1)
+			{
+				_unitOfWork.ShoppingCart.Remove(cart);
+				var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count - 1;
+				HttpContext.Session.SetInt32(SD.SessionCart, count);
+			}
+			else
+			{
 				_unitOfWork.ShoppingCart.DecrementCount(cart, 1);
 			}
 			_unitOfWork.Save();
@@ -237,11 +239,16 @@ namespace DawgInHimWeb.Areas.Customer.Controllers
 			var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.Id == cartId);
 			_unitOfWork.ShoppingCart.Remove(cart);
 			_unitOfWork.Save();
+			var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count;
+			HttpContext.Session.SetInt32(SD.SessionCart, count);
 			return RedirectToAction(nameof(Index));
 		}
 
 
-		private static double GetPriceBasedOnQuantity(double quantity, double price, double price50, double price100)
+
+
+
+		private double GetPriceBasedOnQuantity(double quantity, double price, double price50, double price100)
 		{
 			if (quantity <= 50)
 			{
@@ -257,5 +264,4 @@ namespace DawgInHimWeb.Areas.Customer.Controllers
 			}
 		}
 	}
-
 }
