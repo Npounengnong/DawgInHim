@@ -2,10 +2,6 @@
 using DawgInHim.Models;
 using DawgInHim.Models.ViewModels;
 using DawgInHim.Utility;
-using DawgInHim.DataAccess.Repository.IRepository;
-using DawgInHim.Models.ViewModels;
-using DawgInHim.Models;
-using DawgInHim.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -94,7 +90,8 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 			ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
 				includeProperties: "Product");
 
-
+			ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+			ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
 			ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
 			ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
 
@@ -132,7 +129,6 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 				_unitOfWork.OrderDetail.Add(orderDetail);
 				_unitOfWork.Save();
 			}
-
 
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{

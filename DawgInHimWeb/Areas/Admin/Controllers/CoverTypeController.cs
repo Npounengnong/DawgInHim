@@ -2,11 +2,14 @@
 using DawgInHim.DataAccess.Repository;
 using DawgInHim.DataAccess.Repository.IRepository;
 using DawgInHim.Models;
+using DawgInHim.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace DawgInHimWeb.Areas.Admin.Controllers;
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
 
 public class CoverTypeController : Controller
 {

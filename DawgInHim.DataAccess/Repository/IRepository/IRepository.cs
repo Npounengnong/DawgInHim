@@ -10,7 +10,7 @@ namespace DawgInHim.DataAccess.Repository.IRepository
     public interface IRepository<T> where T : class
     {
         //T - category
-        T GetFirstOrDefault(Expression<Func<T, bool>> filter,string? includeProperties = null);
+        T GetFirstOrDefault(Expression<Func<T, bool>> filter,string? includeProperties = null, bool tracked = true);
 
         IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter=null, string? includeProperties = null);
 
