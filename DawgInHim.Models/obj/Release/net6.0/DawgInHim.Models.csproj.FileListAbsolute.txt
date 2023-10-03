@@ -1,0 +1,12 @@
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\bin\Release\net6.0\DawgInHim.Models.deps.json
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\bin\Release\net6.0\DawgInHim.Models.dll
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\bin\Release\net6.0\DawgInHim.Models.pdb
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.csproj.AssemblyReference.cache
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.AssemblyInfoInputs.cache
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.AssemblyInfo.cs
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.csproj.CoreCompileInputs.cache
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.dll
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\refint\DawgInHim.Models.dll
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\DawgInHim.Models.pdb
+C:\Users\aurel\source\repos\DawgInHim\DawgInHim.Models\obj\Release\net6.0\ref\DawgInHim.Models.dll
