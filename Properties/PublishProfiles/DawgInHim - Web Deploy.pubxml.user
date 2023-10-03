@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAWEK/qSAknUK53tsx0rp+FwAAAAACAAAAAAAQZgAAAAEAACAAAABW5TMF8Tn8LiVGmObgHdG9Q3T3u48MuOK22ta42Gn0HgAAAAAOgAAAAAIAACAAAAD5/b04XSksQSY2aV7pw7OqFGRJeBuaiqZ5981vgKUzEYAAAADNx1g3l+jjpaX0sNsN8gqjP87kjpWDn0ev0PZMUeKskJzwplumhO4FO8RjKZxePC3iiL99gfX+wtf1ocMGx+c03DzThwLhGFMJPa+niFJu45kIobAsm84GIT+0UaMAY2YO2h9XwmvBmCBiXW9XEGq1bYnBUCY9R+gOr4XLHls8sUAAAAA5uHvho9M/XRmQ6ATIyk5Rm+14n9dILoEuSJAPwjHs0IlgEVCgI4In6/C1OlzDgIaz6mOPer+NCJZaQnAwcUpi</EncryptedPassword>
+    <History>True|2023-01-18T14:41:25.2583421Z;True|2023-01-18T09:17:35.6596029-05:00;True|2023-01-18T09:02:25.6980351-05:00;True|2023-01-18T08:54:46.4623336-05:00;True|2023-01-18T00:49:14.6260610-05:00;True|2023-01-18T00:40:03.1299774-05:00;True|2023-01-18T00:28:30.1879913-05:00;True|2023-01-18T00:18:56.4038890-05:00;True|2023-01-18T00:05:08.1403663-05:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=%28localdb%29\mssqllocaldb%3bDatabase=DawgInHimWeb%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>
